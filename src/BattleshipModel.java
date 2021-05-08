@@ -15,29 +15,24 @@ public class BattleshipModel extends Observable {
     // Cruiser = 3 (x1)
     // Destroyer = 2 (x2)
 
-    // Ships
+    // Ship Length
     private final int CARRIER = 5;
     private final int BATTLESHIP = 4;
     private final int CRUISER = 3;
-    private final int DESTROYER = 2;
+    private final int DESTROYERONE = 2;
+    private final int DESTROYERTWO = 1;
 
     /*
-     gameBoard notation:
-     o - miss
-     x - hit
+     gameBoard notation ?:
+     M - miss
+     H - hit
      ~ - water
+     X - sunk
     */
-
-
-
-
-
 
     public BattleshipModel() {
         // Initialise board with 10x10 board
         nGameBoard = new int[MAX_X][MAX_Y];
-        fillBoard();
-        displayBoard();
         initialise();
     }
 
@@ -48,50 +43,53 @@ public class BattleshipModel extends Observable {
     }
 
     public void initialise() {
-
-        displayBoard();
-
+        placeShips();
         setChanged();
         notifyObservers();
     }
 
-    // Fill board will all 0s
-    public void fillBoard() {
-        for (int i = 0; i < nGameBoard.length; i++) {
-            for (int j = 0; j < nGameBoard.length; j++) {
-                nGameBoard[i][j] = 0;
-            }
-        }
-//        // for debugging
-//        System.out.println(Arrays.deepToString(nGameBoard)
-//                .replace("], ", "]\n")
-//                .replace("[[", "[")
-//                .replace("]]", "]"));
+    public int[][] getGameBoard() {
+        return nGameBoard;
+    }
+
+    public void placeShips() {
+        // Placing CARRIER
+        nGameBoard[1][1] = CARRIER;
+        nGameBoard[1][2] = CARRIER;
+        nGameBoard[1][3] = CARRIER;
+        nGameBoard[1][4] = CARRIER;
+        nGameBoard[1][5] = CARRIER;
+
+        // Placing Battleship
+        nGameBoard[2][8] = BATTLESHIP;
+        nGameBoard[3][8] = BATTLESHIP;
+        nGameBoard[4][8] = BATTLESHIP;
+        nGameBoard[5][8] = BATTLESHIP;
+
+        // Placing Cruiser
+        nGameBoard[7][2] = CRUISER;
+        nGameBoard[7][3] = CRUISER;
+        nGameBoard[7][4] = CRUISER;
+
+        // Placing DESTROYER ONE
+        nGameBoard[4][1] = DESTROYERONE;
+        nGameBoard[5][1] = DESTROYERONE;
+
+        // Placing DESTROYER TWO
+        nGameBoard[8][7] = DESTROYERTWO;
+        nGameBoard[8][8] = DESTROYERTWO;
 
     }
 
     public void displayBoard() {
-        char water = '~';
-        char miss = 'o';
-        char hit = 'x';
-
-        // loop through columns of current row
-        for (int column = 0; column < nGameBoard[0].length; column++) {
-            if (nGameBoard[MAX_X][column] == 0)
-                System.out.printf("%3c", water);
-            if (nGameBoard[MAX_X][column] == 1)
-                System.out.printf("%3c", miss);
-            if (nGameBoard[MAX_X][column] == 2)
-                System.out.printf("%3c", hit);
-            if (nGameBoard[MAX_X][column] == 'A' || nGameBoard[MAX_X][column] == 'B' || nGameBoard[MAX_X][column] == 'D' || nGameBoard[MAX_X][column] == 'S' || nGameBoard[MAX_X][column] == 'P')
-                System.out.printf("%3c", water);
-
-        }
-
-        System.out.println();
-
-
+                // for debugging
+        System.out.println(Arrays.deepToString(nGameBoard)
+                .replace("], ", "]\n")
+                .replace("[[", "[")
+                .replace("]]", "]"));
     }
+
+
 
     public int getNumber(char input) {
         int row = 1;
