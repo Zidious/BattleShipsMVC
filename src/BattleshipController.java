@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class BattleshipController {
 
     private BattleshipModel nBattleshipModel;
@@ -16,6 +18,26 @@ public class BattleshipController {
     }
     public void initialise() {
         nBattleshipModel.initialise();
+    }
+
+    public void setMissileCoordinates(int x, int y) {
+        nBattleshipModel.setMissileCoordinates(x, y);
+    }
+
+    public int getMissileSentX() {
+        return nBattleshipModel.getMissileSentX();
+    }
+
+    public int getMissileSentY() {
+        return nBattleshipModel.getMissileSentY();
+    }
+
+    public boolean isMissileHit() {
+        return nBattleshipModel.isMissileHit();
+    }
+
+    public ArrayList<int[]> getSunkShipsCoords() {
+        return nBattleshipModel.getSunkShipsCoords();
     }
 
 }
