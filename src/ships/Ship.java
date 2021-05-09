@@ -10,8 +10,8 @@ public class Ship {
     protected String nShipName;
     // Missile Tracker
     protected int nMissilesReceived;
-    //
-    private ArrayList<int[]> missileHits;
+    // Array list to store all the [x] and [y] coords of hits on each type of ship
+    private final ArrayList<int[]> missileHits;
 
     public Ship() {
         nMissilesReceived = 0;
@@ -39,7 +39,6 @@ public class Ship {
     public void storeMissileHitCoords(int[] coords) {
         nMissilesReceived++;
         missileHits.add(coords);
-        System.out.println("in storeMissileHitCoords(): " + getMissilesReceived());
     }
 
     public ArrayList<int[]> getHitCoordinates() {

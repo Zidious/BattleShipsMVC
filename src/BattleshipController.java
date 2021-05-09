@@ -5,17 +5,18 @@ public class BattleshipController {
     private BattleshipModel nBattleshipModel;
     private BattleshipGUIView nBattleshipGUIView;
 
-    public BattleshipController (BattleshipModel battleshipModel) {
+    public BattleshipController(BattleshipModel battleshipModel) {
         nBattleshipModel = battleshipModel;
     }
 
-    public void setView (BattleshipGUIView battleshipGUIView) {
+    public void setView(BattleshipGUIView battleshipGUIView) {
         nBattleshipGUIView = battleshipGUIView;
     }
 
     public void change() {
         nBattleshipModel.change();
     }
+
     public void initialise() {
         nBattleshipModel.initialise();
     }
@@ -36,8 +37,16 @@ public class BattleshipController {
         return nBattleshipModel.isMissileHit();
     }
 
+    public boolean isMissileMiss() {
+        return nBattleshipModel.isMissileMiss();
+    }
+
     public ArrayList<int[]> getSunkShipsCoords() {
         return nBattleshipModel.getSunkShipsCoords();
+    }
+
+    public boolean isGameOver() {
+        return nBattleshipModel.isGameOver();
     }
 
 }
