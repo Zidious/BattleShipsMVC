@@ -1,7 +1,6 @@
 import ships.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Observable;
 
 public class BattleshipModel extends Observable {
@@ -128,6 +127,9 @@ public class BattleshipModel extends Observable {
             if (ship.isSunk()) {
                 nSunkShipsCoords.addAll(ship.getHitCoordinates());
                 nTotalSunkShips++;
+                for (int[] coords : ship.getHitCoordinates()) {
+                    nGameBoard[coords[0]][coords[1]] = SUNK_INDICATOR;
+                }
             }
             nTotalMissilesFired++;
         }
@@ -209,47 +211,69 @@ public class BattleshipModel extends Observable {
         return nTotalMissilesFired;
     }
 
+    public char boardLetterLabel(int i) {
+        return (char) (i + 64);
+    }
+
     public void displayBoard() {
-        // for debugging
-        System.out.println(Arrays.deepToString(nGameBoard)
-                .replace("], ", "]\n")
-                .replace("[[", "[")
-                .replace("]]", "]"));
+        System.out.print("   ");
+        for (int x = 0; x < nGameBoard.length; x++) {
+            System.out.printf("%3c", boardLetterLabel(x + 1));
+        }
+        System.out.println();
+        for (int row = 0; row < nGameBoard.length; row++) {
+            System.out.printf("%3d", row + 1);
+            for (int col = 0; col < nGameBoard.length; col++) {
+                if (nGameBoard[row][col] == WATER_INDICATOR) {
+                    System.out.printf("%3c", '~');
+                } else if (nGameBoard[row][col] == MISS_INDICATOR) {
+                    System.out.printf("%3c", 'M');
+                } else if (nGameBoard[row][col] == HIT_INDICATOR) {
+                    System.out.printf("%3c", 'H');
+                } else if (nGameBoard[row][col] == SUNK_INDICATOR) {
+                    System.out.printf("%3c", 'S');
+                } else {
+                    System.out.printf("%3c", '~');
+
+                }
+            }
+            System.out.println();
+        }
     }
 
 
     public int getNumber(char input) {
-        int row = 1;
+        int row = 0;
         switch (input) {
             case 'A':
-                row = 1;
+                row = 0;
                 break;
             case 'B':
-                row = 2;
+                row = 1;
                 break;
             case 'C':
-                row = 3;
+                row = 2;
                 break;
             case 'D':
-                row = 4;
+                row = 3;
                 break;
             case 'E':
-                row = 5;
+                row = 4;
                 break;
             case 'F':
-                row = 6;
+                row = 5;
                 break;
             case 'G':
-                row = 7;
+                row = 6;
                 break;
             case 'H':
-                row = 8;
+                row = 7;
                 break;
             case 'I':
-                row = 9;
+                row = 8;
                 break;
             case 'J':
-                row = 10;
+                row = 9;
 
         }
         return row;
