@@ -22,27 +22,27 @@ public class BattleshipController {
     }
 
     public void setMissileCoordinates(int x, int y) {
-        nBattleshipModel.setMissileCoordinates(x, y);
+        nBattleshipModel.setIncomingMissileCoordinates(x, y);
     }
 
     public int getMissileSentX() {
-        return nBattleshipModel.getMissileSentX();
+        return nBattleshipModel.getNewestMissileAtX();
     }
 
     public int getMissileSentY() {
-        return nBattleshipModel.getMissileSentY();
+        return nBattleshipModel.getLatestMissileAtY();
     }
 
     public boolean isMissileHit() {
-        return nBattleshipModel.isMissileHit();
+        return nBattleshipModel.isLatestMissileHit();
     }
 
     public boolean isMissileMiss() {
-        return nBattleshipModel.isMissileMiss();
+        return nBattleshipModel.isLatestMiss();
     }
 
     public ArrayList<int[]> getSunkShipsCoords() {
-        return nBattleshipModel.getSunkShipsCoords();
+        return nBattleshipModel.getSunkShipCoordinates();
     }
 
     public boolean isGameOver() {

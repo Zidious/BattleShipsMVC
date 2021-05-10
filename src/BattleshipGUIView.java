@@ -50,6 +50,7 @@ public class BattleshipGUIView extends Application implements Observer {
 
             battleshipController.setMissileCoordinates(x, y);
             battleshipController.change();
+
             boolean cellIsSunk = false;
             for (int[] coords : battleshipController.getSunkShipsCoords()) {
                 if (coords[0] == x && coords[1] == y) {
@@ -119,7 +120,7 @@ public class BattleshipGUIView extends Application implements Observer {
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         battleshipModel = new BattleshipModel();
         battleshipController = new BattleshipController(battleshipModel);
 

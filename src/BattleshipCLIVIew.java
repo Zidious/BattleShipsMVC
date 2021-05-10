@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class BattleshipCLIVIew {
 
-    public static void main(String[] args) {
+    private static void run() {
         Scanner scanner = new Scanner(System.in);
         BattleshipModel battleshipModel = new BattleshipModel();
 
@@ -12,10 +12,10 @@ public class BattleshipCLIVIew {
             System.out.print("Enter Missile Coordinates: ");
             String input = scanner.next().toUpperCase();
 
-            int col = battleshipModel.getNumber(input.charAt(0));
+            int col = battleshipModel.convertUserInputToColumn(input.charAt(0));
             int row = Integer.parseInt(String.valueOf(input.split(String.valueOf(input.charAt(0)))[1])) - 1;
 
-            battleshipModel.setMissileCoordinates(row, col);
+            battleshipModel.setIncomingMissileCoordinates(row, col);
             battleshipModel.detectMissilesReceivedOnShips();
             battleshipModel.displayBoard();
 
@@ -23,5 +23,9 @@ public class BattleshipCLIVIew {
         } while (!battleshipModel.isGameOver());
 
         System.out.println("Fleet Destroyed. Total Missiles Fired: " + battleshipModel.getTotalMissilesFired());
+    }
+
+    public static void main(String[] args) {
+       run();
     }
 }

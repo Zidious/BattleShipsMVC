@@ -1,7 +1,12 @@
 import ships.*;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
+import java.util.Scanner;
 
 public class BattleshipModel extends Observable {
     private final int MAX_X = 10;
@@ -69,7 +74,8 @@ public class BattleshipModel extends Observable {
         // Initialise board with 10x10 board
         nGameBoard = new int[MAX_X][MAX_Y];
         nSunkShipsCoords = new ArrayList<>();
-        defaultPlacementOfShips();
+//        defaultPlacementOfShips();
+        loadFleetConfiguration();
         setChanged();
         notifyObservers();
     }
@@ -112,11 +118,11 @@ public class BattleshipModel extends Observable {
     public void detectMissilesReceivedOnShips() {
         for (int row = 0; row < nGameBoard.length; row++) {
             for (int col = 0; col < nGameBoard.length; col++) {
-                battleshipHitAndSunkLogic();
-                cruiserHitAndSunkLogic();
-                carrierHitAndSunkLogic();
-                destroyerOneHitAndSunkLogic();
-                destroyerTwoHitAndSunkLogic();
+                detectBattleshipHitMissOrSunk();
+                detectCruiserHitMissOrSunk();
+                detectCarrierHitMissOrSunk();
+                detectDestroyerOneHitMissOrSunk();
+                detectDestroyerTwoHitMissOrSunk();
             }
         }
     }
@@ -124,17 +130,17 @@ public class BattleshipModel extends Observable {
     /*
      Function that takes a Ship and the ship indicator i.e. Battleship = 4
      Checks if the missile received is a "hit"
-     Stores the hit[x] and hit[y[ in an array lise for each type of ship
+     Stores the hit[x] and hit[y] in an array lise for each type of ship
      Sets the hit[x] and hit[y] to 7, meaning it is hit
      Checks if the ship is sunk by checking if the missiles received is greater than the length of the ship
      If it is sunk, increment total ships sunk
      change all of the hit coords to indicate it has been sunk
      Increment total missiles fired
     */
-    private void gameBoardMissileHitIndicator(Ship ship, int indicator) {
-        if (nGameBoard[getMissileSentX()][getMissileSentY()] == indicator) {
-            ship.storeMissileHitCoords(new int[]{getMissileSentX(), getMissileSentY()});
-            nGameBoard[getMissileSentX()][getMissileSentY()] = HIT_INDICATOR;
+    private void detectGameBoardShipHitOrSunk(Ship ship, int indicator) {
+        if (nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == indicator) {
+            ship.storeMissileHitCoords(new int[]{getNewestMissileAtX(), getLatestMissileAtY()});
+            nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] = HIT_INDICATOR;
             if (ship.isSunk()) {
                 nSunkShipsCoords.addAll(ship.getHitCoordinates());
                 nTotalSunkShips++;
@@ -152,43 +158,43 @@ public class BattleshipModel extends Observable {
      If it did miss, sent it 0
      Increment total missiles fired
     */
-    private void gameBoardMissileMissIndicator() {
-        if (nGameBoard[getMissileSentX()][getMissileSentY()] == WATER_INDICATOR) {
-            nGameBoard[getMissileSentX()][getMissileSentY()] = MISS_INDICATOR;
+    private void detectGameBoardLatestMissileMiss() {
+        if (nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == WATER_INDICATOR) {
+            nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] = MISS_INDICATOR;
             nTotalMissilesFired++;
         }
     }
 
     // Function for each type of ship to detect hits and misses by passing their ship object and ship indicator
 
-    private void battleshipHitAndSunkLogic() {
+    private void detectBattleshipHitMissOrSunk() {
 
-        gameBoardMissileHitIndicator(nBattleship, BATTLESHIP_INDICATOR);
-        gameBoardMissileMissIndicator();
+        detectGameBoardShipHitOrSunk(nBattleship, BATTLESHIP_INDICATOR);
+        detectGameBoardLatestMissileMiss();
     }
 
-    private void cruiserHitAndSunkLogic() {
+    private void detectCruiserHitMissOrSunk() {
 
-        gameBoardMissileHitIndicator(nCruiser, CRUISER_INDICATOR);
-        gameBoardMissileMissIndicator();
+        detectGameBoardShipHitOrSunk(nCruiser, CRUISER_INDICATOR);
+        detectGameBoardLatestMissileMiss();
     }
 
-    private void carrierHitAndSunkLogic() {
+    private void detectCarrierHitMissOrSunk() {
 
-        gameBoardMissileHitIndicator(nCarrier, CARRIER_INDICATOR);
-        gameBoardMissileMissIndicator();
+        detectGameBoardShipHitOrSunk(nCarrier, CARRIER_INDICATOR);
+        detectGameBoardLatestMissileMiss();
     }
 
-    private void destroyerOneHitAndSunkLogic() {
+    private void detectDestroyerOneHitMissOrSunk() {
 
-        gameBoardMissileHitIndicator(nDestroyerOne, DESTROYER_ONE_INDICATOR);
-        gameBoardMissileMissIndicator();
+        detectGameBoardShipHitOrSunk(nDestroyerOne, DESTROYER_ONE_INDICATOR);
+        detectGameBoardLatestMissileMiss();
     }
 
-    private void destroyerTwoHitAndSunkLogic() {
+    private void detectDestroyerTwoHitMissOrSunk() {
 
-        gameBoardMissileHitIndicator(nDestroyerTwo, DESTROYER_TWO_INDICATOR);
-        gameBoardMissileMissIndicator();
+        detectGameBoardShipHitOrSunk(nDestroyerTwo, DESTROYER_TWO_INDICATOR);
+        detectGameBoardLatestMissileMiss();
     }
 
     // Function to check if the all the ships are sunk
@@ -202,35 +208,35 @@ public class BattleshipModel extends Observable {
     }
 
     // Getter: Sunk ships coords[]
-    public ArrayList<int[]> getSunkShipsCoords() {
+    public ArrayList<int[]> getSunkShipCoordinates() {
         return nSunkShipsCoords;
     }
 
     // Setter: Set missile coords[][]
-    public void setMissileCoordinates(int x, int y) {
+    public void setIncomingMissileCoordinates(int x, int y) {
         nMissileSentX = x;
         nMissileSentY = y;
 
     }
 
     // Getter: Get coord[x] for missile
-    public int getMissileSentX() {
+    public int getNewestMissileAtX() {
         return nMissileSentX;
     }
 
     // Getter: Get coord[Y] for missile
-    public int getMissileSentY() {
+    public int getLatestMissileAtY() {
         return nMissileSentY;
     }
 
     // Function to detect missile hit
-    public boolean isMissileHit() {
-        return nGameBoard[getMissileSentX()][getMissileSentY()] == HIT_INDICATOR;
+    public boolean isLatestMissileHit() {
+        return nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == HIT_INDICATOR;
     }
 
     // Function to detect missile miss
-    public boolean isMissileMiss() {
-        return nGameBoard[getMissileSentX()][getMissileSentY()] == MISS_INDICATOR;
+    public boolean isLatestMiss() {
+        return nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == MISS_INDICATOR;
     }
 
     // Getter: Get return total missiles fired
@@ -239,7 +245,7 @@ public class BattleshipModel extends Observable {
     }
 
     // Getter: ASCII values for 0 - 10 to A B C etc
-    public char boardLetterLabel(int i) {
+    public char convertRowToLetter(int i) {
         return (char) (i + 64);
     }
 
@@ -247,7 +253,7 @@ public class BattleshipModel extends Observable {
     public void displayBoard() {
         System.out.print("   ");
         for (int x = 0; x < nGameBoard.length; x++) {
-            System.out.printf("%3c", boardLetterLabel(x + 1));
+            System.out.printf("%3c", convertRowToLetter(x + 1));
         }
         System.out.println();
         for (int row = 0; row < nGameBoard.length; row++) {
@@ -272,7 +278,7 @@ public class BattleshipModel extends Observable {
 
 
     // Function to convert the char input for CLI to column number A = 0, B = 1 etc
-    public int getNumber(char input) {
+    public int convertUserInputToColumn(char input) {
         int col = 0;
         switch (input) {
             case 'A':
@@ -308,4 +314,44 @@ public class BattleshipModel extends Observable {
         }
         return col;
     }
+
+    public void loadFleetConfiguration() {
+        Scanner sc = null;
+        try {
+            sc = new Scanner(new BufferedReader(new FileReader("C:\\Users\\Gab\\IdeaProjects\\SampleProjectOne\\AdvancedOOPCWMAIN\\src\\shipConfiguration.txt")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        int shipCellCounter = 0;
+        while (sc.hasNextLine()) {
+            for (int row = 0; row < nGameBoard.length; row++) {
+                String[] line = sc.nextLine().trim().split(" ");
+                for (int col = 0; col < line.length; col++) {
+//                    nGameBoard[row][col] = Integer.parseInt(line[col]);
+                    if (nGameBoard[row][col] != CARRIER_INDICATOR) {
+                        // Places the Carrier if not in there already
+                        nGameBoard[row][col] = Integer.parseInt(line[col]);
+                        shipCellCounter++;
+                        if ( nGameBoard[row][col] == CARRIER_INDICATOR && nCarrier.getShipLength() > shipCellCounter) {
+                            // ^ Need to add something to check each cell does not exceed 5
+                            // Hits 5 files as 5 cells contain the ship
+                            System.out.println("HIT");
+
+                        }
+                        System.out.println(shipCellCounter);
+                        shipCellCounter = 0;
+                    }
+                }
+            }
+        }
+        System.out.println(shipCellCounter);
+        System.out.println(Arrays.deepToString(nGameBoard));
+    }
 }
+
+
+
+
+
