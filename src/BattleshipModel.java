@@ -108,9 +108,10 @@ public class BattleshipModel extends Observable {
 
     }
 
+    // Loops over the entire array calling the logic for each type of ship
     public void detectMissilesReceivedOnShips() {
-        for (int x = 0; x < nGameBoard.length; x++) {
-            for (int y = 0; y < nGameBoard.length; y++) {
+        for (int row = 0; row < nGameBoard.length; row++) {
+            for (int col = 0; col < nGameBoard.length; col++) {
                 battleshipHitAndSunkLogic();
                 cruiserHitAndSunkLogic();
                 carrierHitAndSunkLogic();
@@ -120,6 +121,16 @@ public class BattleshipModel extends Observable {
         }
     }
 
+    /*
+     Function that takes a Ship and the ship indicator i.e. Battleship = 4
+     Checks if the missile received is a "hit"
+     Stores the hit[x] and hit[y[ in an array lise for each type of ship
+     Sets the hit[x] and hit[y] to 7, meaning it is hit
+     Checks if the ship is sunk by checking if the missiles received is greater than the length of the ship
+     If it is sunk, increment total ships sunk
+     change all of the hit coords to indicate it has been sunk
+     Increment total missiles fired
+    */
     private void gameBoardMissileHitIndicator(Ship ship, int indicator) {
         if (nGameBoard[getMissileSentX()][getMissileSentY()] == indicator) {
             ship.storeMissileHitCoords(new int[]{getMissileSentX(), getMissileSentY()});
@@ -135,12 +146,20 @@ public class BattleshipModel extends Observable {
         }
     }
 
+    /*
+     Function to check missed missiles
+     Check if the sent missile hit the water indicator which is 0
+     If it did miss, sent it 0
+     Increment total missiles fired
+    */
     private void gameBoardMissileMissIndicator() {
         if (nGameBoard[getMissileSentX()][getMissileSentY()] == WATER_INDICATOR) {
             nGameBoard[getMissileSentX()][getMissileSentY()] = MISS_INDICATOR;
             nTotalMissilesFired++;
         }
     }
+
+    // Function for each type of ship to detect hits and misses by passing their ship object and ship indicator
 
     private void battleshipHitAndSunkLogic() {
 
@@ -172,49 +191,59 @@ public class BattleshipModel extends Observable {
         gameBoardMissileMissIndicator();
     }
 
-
+    // Function to check if the all the ships are sunk
     public boolean isGameOver() {
-        return nTotalSunkShips >= 5;
+        return getTotalSunkShips() >= 5;
     }
 
+    // Getter: sunk ships
     public int getTotalSunkShips() {
         return nTotalSunkShips;
     }
 
+    // Getter: Sunk ships coords[]
     public ArrayList<int[]> getSunkShipsCoords() {
         return nSunkShipsCoords;
     }
 
+    // Setter: Set missile coords[][]
     public void setMissileCoordinates(int x, int y) {
         nMissileSentX = x;
         nMissileSentY = y;
 
     }
 
+    // Getter: Get coord[x] for missile
     public int getMissileSentX() {
         return nMissileSentX;
     }
 
+    // Getter: Get coord[Y] for missile
     public int getMissileSentY() {
         return nMissileSentY;
     }
 
+    // Function to detect missile hit
     public boolean isMissileHit() {
         return nGameBoard[getMissileSentX()][getMissileSentY()] == HIT_INDICATOR;
     }
 
+    // Function to detect missile miss
     public boolean isMissileMiss() {
         return nGameBoard[getMissileSentX()][getMissileSentY()] == MISS_INDICATOR;
     }
 
+    // Getter: Get return total missiles fired
     public int getTotalMissilesFired() {
         return nTotalMissilesFired;
     }
 
+    // Getter: ASCII values for 0 - 10 to A B C etc
     public char boardLetterLabel(int i) {
         return (char) (i + 64);
     }
 
+    // Function to display the CLI board based on each indicator
     public void displayBoard() {
         System.out.print("   ");
         for (int x = 0; x < nGameBoard.length; x++) {
@@ -242,6 +271,7 @@ public class BattleshipModel extends Observable {
     }
 
 
+    // Function to convert the char input for CLI to column number A = 0, B = 1 etc
     public int getNumber(char input) {
         int col = 0;
         switch (input) {
@@ -278,6 +308,4 @@ public class BattleshipModel extends Observable {
         }
         return col;
     }
-
-
 }

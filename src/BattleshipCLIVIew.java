@@ -5,6 +5,7 @@ public class BattleshipCLIVIew {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         BattleshipModel battleshipModel = new BattleshipModel();
+
         battleshipModel.displayBoard();
 
         do {
