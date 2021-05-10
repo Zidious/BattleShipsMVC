@@ -13,7 +13,6 @@ public class BattleshipCLIVIew {
 
             int col = battleshipModel.getNumber(input.charAt(0));
             int row = Integer.parseInt(String.valueOf(input.split(String.valueOf(input.charAt(0)))[1])) - 1;
-            System.out.println(row);
 
             battleshipModel.setMissileCoordinates(row, col);
             battleshipModel.detectMissilesReceivedOnShips();
@@ -21,7 +20,7 @@ public class BattleshipCLIVIew {
 
 
         } while (!battleshipModel.isGameOver());
-        System.out.println("Fleet Destroyed. Total Missiles Fired: " + battleshipModel.getTotalMissilesFired());
 
+        System.out.println("Fleet Destroyed. Total Missiles Fired: " + battleshipModel.getTotalMissilesFired());
     }
 }

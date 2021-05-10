@@ -243,40 +243,40 @@ public class BattleshipModel extends Observable {
 
 
     public int getNumber(char input) {
-        int row = 0;
+        int col = 0;
         switch (input) {
             case 'A':
-                row = 0;
+                col = 0;
                 break;
             case 'B':
-                row = 1;
+                col = 1;
                 break;
             case 'C':
-                row = 2;
+                col = 2;
                 break;
             case 'D':
-                row = 3;
+                col = 3;
                 break;
             case 'E':
-                row = 4;
+                col = 4;
                 break;
             case 'F':
-                row = 5;
+                col = 5;
                 break;
             case 'G':
-                row = 6;
+                col = 6;
                 break;
             case 'H':
-                row = 7;
+                col = 7;
                 break;
             case 'I':
-                row = 8;
+                col = 8;
                 break;
             case 'J':
-                row = 9;
+                col = 9;
 
         }
-        return row;
+        return col;
     }
 
 
