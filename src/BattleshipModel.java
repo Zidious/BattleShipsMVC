@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.Scanner;
 
@@ -41,6 +40,8 @@ public class BattleshipModel extends Observable {
     private int nMissileSentX;
     private int nMissileSentY;
 
+    // Boolean value to store click for ship configuration
+    private boolean nIsFileShipConfiguration = false;
 
     /*
      gameBoard notation:
@@ -74,8 +75,6 @@ public class BattleshipModel extends Observable {
         // Initialise board with 10x10 board
         nGameBoard = new int[MAX_X][MAX_Y];
         nSunkShipsCoords = new ArrayList<>();
-//        defaultPlacementOfShips();
-        loadFleetConfiguration();
         setChanged();
         notifyObservers();
     }
@@ -91,7 +90,7 @@ public class BattleshipModel extends Observable {
         nGameBoard[1][3] = CARRIER_INDICATOR;
         nGameBoard[1][4] = CARRIER_INDICATOR;
         nGameBoard[1][5] = CARRIER_INDICATOR;
-        ;
+
 
         // Placing Battleship
         nGameBoard[2][8] = BATTLESHIP_INDICATOR;
@@ -138,9 +137,9 @@ public class BattleshipModel extends Observable {
      Increment total missiles fired
     */
     private void detectGameBoardShipHitOrSunk(Ship ship, int indicator) {
-        if (nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == indicator) {
-            ship.storeMissileHitCoords(new int[]{getNewestMissileAtX(), getLatestMissileAtY()});
-            nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] = HIT_INDICATOR;
+        if (nGameBoard[getLatestMissileX()][getLatestMissileAtY()] == indicator) {
+            ship.storeMissileHitCoords(new int[]{getLatestMissileX(), getLatestMissileAtY()});
+            nGameBoard[getLatestMissileX()][getLatestMissileAtY()] = HIT_INDICATOR;
             if (ship.isSunk()) {
                 nSunkShipsCoords.addAll(ship.getHitCoordinates());
                 nTotalSunkShips++;
@@ -159,8 +158,8 @@ public class BattleshipModel extends Observable {
      Increment total missiles fired
     */
     private void detectGameBoardLatestMissileMiss() {
-        if (nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == WATER_INDICATOR) {
-            nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] = MISS_INDICATOR;
+        if (nGameBoard[getLatestMissileX()][getLatestMissileAtY()] == WATER_INDICATOR) {
+            nGameBoard[getLatestMissileX()][getLatestMissileAtY()] = MISS_INDICATOR;
             nTotalMissilesFired++;
         }
     }
@@ -214,13 +213,13 @@ public class BattleshipModel extends Observable {
 
     // Setter: Set missile coords[][]
     public void setIncomingMissileCoordinates(int x, int y) {
+        assert x <= 9 : "coordinate X must be less than or equal to 10";
         nMissileSentX = x;
         nMissileSentY = y;
-
     }
 
     // Getter: Get coord[x] for missile
-    public int getNewestMissileAtX() {
+    public int getLatestMissileX() {
         return nMissileSentX;
     }
 
@@ -231,12 +230,12 @@ public class BattleshipModel extends Observable {
 
     // Function to detect missile hit
     public boolean isLatestMissileHit() {
-        return nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == HIT_INDICATOR;
+        return nGameBoard[getLatestMissileX()][getLatestMissileAtY()] == HIT_INDICATOR;
     }
 
     // Function to detect missile miss
     public boolean isLatestMiss() {
-        return nGameBoard[getNewestMissileAtX()][getLatestMissileAtY()] == MISS_INDICATOR;
+        return nGameBoard[getLatestMissileX()][getLatestMissileAtY()] == MISS_INDICATOR;
     }
 
     // Getter: Get return total missiles fired
@@ -315,7 +314,7 @@ public class BattleshipModel extends Observable {
         return col;
     }
 
-    public void loadFleetConfiguration() {
+    public void readFleetConfiguration() {
         Scanner sc = null;
         try {
             sc = new Scanner(new BufferedReader(new FileReader("C:\\Users\\Gab\\IdeaProjects\\SampleProjectOne\\AdvancedOOPCWMAIN\\src\\shipConfiguration.txt")));
@@ -323,31 +322,32 @@ public class BattleshipModel extends Observable {
             e.printStackTrace();
         }
 
-
-        int shipCellCounter = 0;
-        while (sc.hasNextLine()) {
+        while (true) {
+            assert sc != null;
+            if (!sc.hasNextLine()) break;
             for (int row = 0; row < nGameBoard.length; row++) {
                 String[] line = sc.nextLine().trim().split(" ");
                 for (int col = 0; col < line.length; col++) {
-//                    nGameBoard[row][col] = Integer.parseInt(line[col]);
-                    if (nGameBoard[row][col] != CARRIER_INDICATOR) {
-                        // Places the Carrier if not in there already
-                        nGameBoard[row][col] = Integer.parseInt(line[col]);
-                        shipCellCounter++;
-                        if ( nGameBoard[row][col] == CARRIER_INDICATOR && nCarrier.getShipLength() > shipCellCounter) {
-                            // ^ Need to add something to check each cell does not exceed 5
-                            // Hits 5 files as 5 cells contain the ship
-                            System.out.println("HIT");
-
-                        }
-                        System.out.println(shipCellCounter);
-                        shipCellCounter = 0;
-                    }
+                    nGameBoard[row][col] = Integer.parseInt(line[col]);
                 }
             }
         }
-        System.out.println(shipCellCounter);
-        System.out.println(Arrays.deepToString(nGameBoard));
+    }
+
+    public boolean getFleetConfigurationDecision() {
+        return nIsFileShipConfiguration;
+    }
+
+    public void setShipConfigurationDecision(boolean type) {
+        nIsFileShipConfiguration = type;
+    }
+
+    public void loadShipConfiguration() {
+        if (getFleetConfigurationDecision()) {
+            defaultPlacementOfShips();
+        } else {
+            readFleetConfiguration();
+        }
     }
 }
 

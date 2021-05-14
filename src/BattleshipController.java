@@ -26,7 +26,7 @@ public class BattleshipController {
     }
 
     public int getMissileSentX() {
-        return nBattleshipModel.getNewestMissileAtX();
+        return nBattleshipModel.getLatestMissileX();
     }
 
     public int getMissileSentY() {
@@ -49,4 +49,7 @@ public class BattleshipController {
         return nBattleshipModel.isGameOver();
     }
 
+    public void setShipConfigurationDecision(boolean type) {
+        nBattleshipModel.setShipConfigurationDecision(type);
+    }
 }

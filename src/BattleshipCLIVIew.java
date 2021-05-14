@@ -6,9 +6,15 @@ public class BattleshipCLIVIew {
         Scanner scanner = new Scanner(System.in);
         BattleshipModel battleshipModel = new BattleshipModel();
 
-        battleshipModel.displayBoard();
-
+        System.out.print("Load Default Configuration (Y) or Fleet File Configuration (N)?");
+        boolean fleetSelection = (scanner.next().equalsIgnoreCase("Y"));
+        battleshipModel.setShipConfigurationDecision(fleetSelection);
+        battleshipModel.loadShipConfiguration();
         do {
+
+
+            battleshipModel.displayBoard();
+
             System.out.print("Enter Missile Coordinates: ");
             String input = scanner.next().toUpperCase();
 

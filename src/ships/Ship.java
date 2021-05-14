@@ -11,11 +11,14 @@ public class Ship {
     // Missile Tracker
     protected int nMissilesReceived;
     // Array list to store all the [x] and [y] coords of hits on each type of ship
-    private final ArrayList<int[]> missileHits;
+    private final ArrayList<int[]> nMissileHits;
+    // Array list to hold [x] [y] coords for ship configuration by user
+    private final ArrayList<int[]> nShipConfigurationCoordinates;
 
     public Ship() {
         nMissilesReceived = 0;
-        missileHits = new ArrayList<>();
+        nMissileHits = new ArrayList<>();
+        nShipConfigurationCoordinates = new ArrayList<>();
     }
 
     public String getShipName() {
@@ -38,10 +41,22 @@ public class Ship {
 
     public void storeMissileHitCoords(int[] coords) {
         nMissilesReceived++;
-        missileHits.add(coords);
+        nMissileHits.add(coords);
+    }
+
+    public void storeShipConfigurationCoords(int[] coords) {
+        nShipConfigurationCoordinates.add(coords);
+    }
+
+    public boolean isShipConfigurationValid() {
+        return nShipConfigurationCoordinates.size() <= getShipLength();
+    }
+
+    public ArrayList<int[]> getShipConfigurationCoordinates(){
+        return nShipConfigurationCoordinates;
     }
 
     public ArrayList<int[]> getHitCoordinates() {
-        return missileHits;
+        return nMissileHits;
     }
 }

@@ -1,8 +1,11 @@
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -11,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BattleshipGUIView extends Application implements Observer {
 
@@ -21,8 +25,10 @@ public class BattleshipGUIView extends Application implements Observer {
     private BattleshipController battleshipController;
     private final GridPane gridPane = new GridPane();
 
+
     @Override
     public void update(Observable o, Object arg) {
+        setUpFleetConfiguration();
         if (!battleshipController.isGameOver()) {
             missileClickEvent();
         } else {
@@ -40,6 +46,26 @@ public class BattleshipGUIView extends Application implements Observer {
         }
 
     }
+
+    private GridPane setUpFleetConfiguration() {
+
+        GridPane gridPane = new GridPane();
+        AtomicBoolean fleetConfiguration = new AtomicBoolean();
+
+        Button defaultFleetConfigurationButton = new Button("Load Default Fleet");
+        Button customFleetConfigurationButton = new Button("Load Fleet From File");
+
+        defaultFleetConfigurationButton.setOnMouseClicked(event -> fleetConfiguration.set(true));
+
+        customFleetConfigurationButton.setOnMouseClicked(event -> fleetConfiguration.set(false));
+
+        battleshipController.setShipConfigurationDecision(fleetConfiguration.get());
+
+        gridPane.getChildren().addAll(defaultFleetConfigurationButton, customFleetConfigurationButton);
+
+        return gridPane;
+    }
+
 
     private void missileClickEvent() {
         gridPane.setOnMouseClicked(event -> {
@@ -63,20 +89,18 @@ public class BattleshipGUIView extends Application implements Observer {
                     Node sunkNode = getNode(gridPane, coords[1], coords[0]);
                     Rectangle recolourSunkNode = (Rectangle) sunkNode;
                     recolourSunkNode.setFill(Color.YELLOW);
-                    recolourSunkNode.setStroke(Color.YELLOW);
-                    rectangle.setFill(Color.YELLOW);
-                    rectangle.setStroke(Color.YELLOW);
+                    recolourSunkNode.setStroke(Color.BLACK);
 
                 }
             } else {
                 if (battleshipController.isMissileHit()) {
                     rectangle.setFill(Color.RED);
-                    rectangle.setStroke(Color.RED);
+                    rectangle.setStroke(Color.BLACK);
 
                 } else {
                     if (battleshipController.isMissileMiss()) {
                         rectangle.setFill(Color.DARKBLUE);
-                        rectangle.setStroke(Color.DARKBLUE);
+                        rectangle.setStroke(Color.BLACK);
 
                     }
                 }
@@ -126,15 +150,37 @@ public class BattleshipGUIView extends Application implements Observer {
 
         primaryStage.setTitle("Battleships MVC");
         GridPane gridPane = displayGrid();
+        HBox menuPane = new HBox();
 
-        Scene scene = new Scene(gridPane,
+        Scene primaryScene = new Scene(gridPane,
                 WINDOW_WIDTH, WINDOW_HEIGHT);
-        primaryStage.setScene(scene);
+
+        Scene secondaryScene = new Scene(menuPane,
+                WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        Button defaultFleetConfigurationButton = new Button("Load Default Fleet");
+        Button customFleetConfigurationButton = new Button("Load Fleet From File");
+
+        defaultFleetConfigurationButton.setOnMouseClicked(event -> {
+            battleshipController.setShipConfigurationDecision(true);
+            battleshipModel.loadShipConfiguration();
+            primaryStage.setScene(primaryScene);
+        });
+
+        customFleetConfigurationButton.setOnMouseClicked(event -> {
+            battleshipController.setShipConfigurationDecision(false);
+            battleshipModel.loadShipConfiguration();
+            primaryStage.setScene(primaryScene);
+        });
+
+        menuPane.getChildren().addAll(defaultFleetConfigurationButton, customFleetConfigurationButton);
+        menuPane.setAlignment(Pos.CENTER);
+        menuPane.setSpacing(10);
+
+        primaryStage.setScene(secondaryScene);
         primaryStage.show();
         battleshipModel.addObserver(this);
-
         update(null, null);
-
     }
 
 
