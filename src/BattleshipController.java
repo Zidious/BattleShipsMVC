@@ -38,7 +38,7 @@ public class BattleshipController {
     }
 
     public boolean isMissileMiss() {
-        return nBattleshipModel.isLatestMiss();
+        return nBattleshipModel.isLatestMissileMiss();
     }
 
     public ArrayList<int[]> getSunkShipsCoords() {

@@ -28,7 +28,6 @@ public class BattleshipGUIView extends Application implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        setUpFleetConfiguration();
         if (!battleshipController.isGameOver()) {
             missileClickEvent();
         } else {
@@ -40,32 +39,13 @@ public class BattleshipGUIView extends Application implements Observer {
             label.setFont(new Font(20));
             label.setTextFill(Color.BLACK);
             label.setOpacity(1);
+            rectangle.setOpacity(1);
             stackPane.getChildren().addAll(rectangle, label);
             gridPane.getChildren().add(stackPane);
             gridPane.setDisable(true);
         }
 
     }
-
-    private GridPane setUpFleetConfiguration() {
-
-        GridPane gridPane = new GridPane();
-        AtomicBoolean fleetConfiguration = new AtomicBoolean();
-
-        Button defaultFleetConfigurationButton = new Button("Load Default Fleet");
-        Button customFleetConfigurationButton = new Button("Load Fleet From File");
-
-        defaultFleetConfigurationButton.setOnMouseClicked(event -> fleetConfiguration.set(true));
-
-        customFleetConfigurationButton.setOnMouseClicked(event -> fleetConfiguration.set(false));
-
-        battleshipController.setShipConfigurationDecision(fleetConfiguration.get());
-
-        gridPane.getChildren().addAll(defaultFleetConfigurationButton, customFleetConfigurationButton);
-
-        return gridPane;
-    }
-
 
     private void missileClickEvent() {
         gridPane.setOnMouseClicked(event -> {

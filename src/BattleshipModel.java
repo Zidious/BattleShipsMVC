@@ -137,17 +137,21 @@ public class BattleshipModel extends Observable {
      Increment total missiles fired
     */
     private void detectGameBoardShipHitOrSunk(Ship ship, int indicator) {
+        assert getLatestMissileX() < 10 && getLatestMissileAtY() < 10 : "X and Y must be <= 10";
+        System.out.println(getLatestMissileX());
         if (nGameBoard[getLatestMissileX()][getLatestMissileAtY()] == indicator) {
             ship.storeMissileHitCoords(new int[]{getLatestMissileX(), getLatestMissileAtY()});
             nGameBoard[getLatestMissileX()][getLatestMissileAtY()] = HIT_INDICATOR;
             if (ship.isSunk()) {
                 nSunkShipsCoords.addAll(ship.getHitCoordinates());
                 nTotalSunkShips++;
+                assert invariantSunkShips() : "Invariant: Ships Sunk Must >= 0";
                 for (int[] coords : ship.getHitCoordinates()) {
                     nGameBoard[coords[0]][coords[1]] = SUNK_INDICATOR;
                 }
             }
             nTotalMissilesFired++;
+            assert invariantTotalMissilesFired() : "Invariant: Total Missiles Fired Must >= 0";
         }
     }
 
@@ -213,7 +217,7 @@ public class BattleshipModel extends Observable {
 
     // Setter: Set missile coords[][]
     public void setIncomingMissileCoordinates(int x, int y) {
-        assert x <= 9 : "coordinate X must be less than or equal to 10";
+        assert y <= 10 : "coordinate X must be less than or equal to 10";
         nMissileSentX = x;
         nMissileSentY = y;
     }
@@ -234,7 +238,7 @@ public class BattleshipModel extends Observable {
     }
 
     // Function to detect missile miss
-    public boolean isLatestMiss() {
+    public boolean isLatestMissileMiss() {
         return nGameBoard[getLatestMissileX()][getLatestMissileAtY()] == MISS_INDICATOR;
     }
 
@@ -244,7 +248,7 @@ public class BattleshipModel extends Observable {
     }
 
     // Getter: ASCII values for 0 - 10 to A B C etc
-    public char convertRowToLetter(int i) {
+    public char convertColumnLetterToNumber(int i) {
         return (char) (i + 64);
     }
 
@@ -252,23 +256,25 @@ public class BattleshipModel extends Observable {
     public void displayBoard() {
         System.out.print("   ");
         for (int x = 0; x < nGameBoard.length; x++) {
-            System.out.printf("%3c", convertRowToLetter(x + 1));
+            System.out.printf("%3c", convertColumnLetterToNumber(x + 1));
         }
         System.out.println();
         for (int row = 0; row < nGameBoard.length; row++) {
             System.out.printf("%3d", row + 1);
             for (int col = 0; col < nGameBoard.length; col++) {
-                if (nGameBoard[row][col] == WATER_INDICATOR) {
-                    System.out.printf("%3c", '~');
-                } else if (nGameBoard[row][col] == MISS_INDICATOR) {
-                    System.out.printf("%3c", 'M');
-                } else if (nGameBoard[row][col] == HIT_INDICATOR) {
-                    System.out.printf("%3c", 'H');
-                } else if (nGameBoard[row][col] == SUNK_INDICATOR) {
-                    System.out.printf("%3c", 'S');
-                } else {
-                    System.out.printf("%3c", '~');
 
+                switch (nGameBoard[row][col]) {
+                    case MISS_INDICATOR:
+                        System.out.printf("%3c", 'M');
+                        break;
+                    case HIT_INDICATOR:
+                        System.out.printf("%3c", 'H');
+                        break;
+                    case SUNK_INDICATOR:
+                        System.out.printf("%3c", 'S');
+                        break;
+                    default:
+                        System.out.printf("%3c", '~');
                 }
             }
             System.out.println();
@@ -317,13 +323,16 @@ public class BattleshipModel extends Observable {
     public void readFleetConfiguration() {
         Scanner sc = null;
         try {
-            sc = new Scanner(new BufferedReader(new FileReader("C:\\Users\\Gab\\IdeaProjects\\SampleProjectOne\\AdvancedOOPCWMAIN\\src\\shipConfiguration.txt")));
+            // PC
+//            sc = new Scanner(new BufferedReader(new FileReader("C:\\Users\\Gab\\IdeaProjects\\SampleProjectOne\\AdvancedOOPCWMAIN\\src\\shipConfiguration.txt")));
+            // Mac
+            sc = new Scanner(new BufferedReader(new FileReader("/Users/gabe/Documents/CompSci/BSc Top-Up/W3007 Advanced OOP/AdvancedOOPCW/src/shipConfiguration.txt")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         while (true) {
-            assert sc != null;
+            assert sc != null : "File: Reading file failed";
             if (!sc.hasNextLine()) break;
             for (int row = 0; row < nGameBoard.length; row++) {
                 String[] line = sc.nextLine().trim().split(" ");
@@ -349,6 +358,18 @@ public class BattleshipModel extends Observable {
             readFleetConfiguration();
         }
     }
+
+    // Assert Invariant Functions:
+
+    private boolean invariantSunkShips() {
+        return getTotalSunkShips() >= 0;
+    }
+
+    private boolean invariantTotalMissilesFired() {
+        return getTotalMissilesFired() >= 0;
+    }
+
+
 }
 
 
