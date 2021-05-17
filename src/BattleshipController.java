@@ -25,14 +25,6 @@ public class BattleshipController {
         nBattleshipModel.setIncomingMissileCoordinates(x, y);
     }
 
-    public int getMissileSentX() {
-        return nBattleshipModel.getLatestMissileX();
-    }
-
-    public int getMissileSentY() {
-        return nBattleshipModel.getLatestMissileY();
-    }
-
     public boolean isMissileHit() {
         return nBattleshipModel.isLatestMissileHit();
     }

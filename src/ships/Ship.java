@@ -2,7 +2,7 @@ package ships;
 
 import java.util.ArrayList;
 
-public class Ship {
+public abstract class Ship {
 
     // Ship Length
     protected int nShipLength;
@@ -42,18 +42,6 @@ public class Ship {
     public void storeMissileHitCoords(int[] coords) {
         nMissilesReceived++;
         nMissileHits.add(coords);
-    }
-
-    public void storeShipConfigurationCoords(int[] coords) {
-        nShipConfigurationCoordinates.add(coords);
-    }
-
-    public boolean isShipConfigurationValid() {
-        return nShipConfigurationCoordinates.size() <= getShipLength();
-    }
-
-    public ArrayList<int[]> getShipConfigurationCoordinates(){
-        return nShipConfigurationCoordinates;
     }
 
     public ArrayList<int[]> getHitCoordinates() {

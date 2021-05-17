@@ -20,64 +20,64 @@ public class BattleshipGUIView extends Application implements Observer {
     private static final int WINDOW_WIDTH = 511;
     private static final int WINDOW_HEIGHT = 511;
 
-    private BattleshipModel battleshipModel;
-    private BattleshipController battleshipController;
-    private final GridPane gridPane = new GridPane();
+    private BattleshipModel nBattleshipModel;
+    private BattleshipController nBattleshipController;
+    private final GridPane nGridPane = new GridPane();
 
 
     @Override
     public void update(Observable o, Object arg) {
-        if (!battleshipController.isGameOver()) {
+        if (!nBattleshipController.isGameOver()) {
             missileClickEvent();
         } else {
             Rectangle rectangle = new Rectangle(511, 511);
             StackPane stackPane = new StackPane();
             rectangle.setFill(Color.LIGHTBLUE);
             Label label = new Label("Fleet Destroyed. Total Missiles Fired: "
-                    + battleshipModel.getTotalMissilesFired());
+                    + nBattleshipModel.getTotalMissilesFired());
             label.setFont(new Font(20));
             label.setTextFill(Color.BLACK);
             label.setOpacity(1);
             rectangle.setOpacity(1);
             stackPane.getChildren().addAll(rectangle, label);
-            gridPane.getChildren().add(stackPane);
-            gridPane.setDisable(true);
+            nGridPane.getChildren().add(stackPane);
+            nGridPane.setDisable(true);
         }
 
     }
 
     private void missileClickEvent() {
-        gridPane.setOnMouseClicked(event -> {
+        nGridPane.setOnMouseClicked(event -> {
             int x = GridPane.getRowIndex((Node) event.getTarget());
             int y = GridPane.getColumnIndex((Node) event.getTarget());
 
             Rectangle rectangle = new Rectangle(50, 50);
 
-            battleshipController.setMissileCoordinates(x, y);
-            battleshipController.change();
+            nBattleshipController.setMissileCoordinates(x, y);
+            nBattleshipController.change();
 
             boolean cellIsSunk = false;
-            for (int[] coords : battleshipController.getSunkShipsCoords()) {
+            for (int[] coords : nBattleshipController.getSunkShipsCoords()) {
                 if (coords[0] == x && coords[1] == y) {
                     cellIsSunk = true;
                     break;
                 }
             }
-            if (cellIsSunk && !battleshipController.isGameOver()) {
-                for (int[] coords : battleshipController.getSunkShipsCoords()) {
-                    Node sunkNode = getNode(gridPane, coords[1], coords[0]);
+            if (cellIsSunk && !nBattleshipController.isGameOver()) {
+                for (int[] coords : nBattleshipController.getSunkShipsCoords()) {
+                    Node sunkNode = getNode(nGridPane, coords[1], coords[0]);
                     Rectangle recolourSunkNode = (Rectangle) sunkNode;
                     recolourSunkNode.setFill(Color.YELLOW);
                     recolourSunkNode.setStroke(Color.BLACK);
 
                 }
             } else {
-                if (battleshipController.isMissileHit()) {
+                if (nBattleshipController.isMissileHit()) {
                     rectangle.setFill(Color.RED);
                     rectangle.setStroke(Color.BLACK);
 
                 } else {
-                    if (battleshipController.isMissileMiss()) {
+                    if (nBattleshipController.isMissileMiss()) {
                         rectangle.setFill(Color.DARKBLUE);
                         rectangle.setStroke(Color.BLACK);
 
@@ -86,7 +86,7 @@ public class BattleshipGUIView extends Application implements Observer {
                 GridPane.setColumnIndex(rectangle, y);
                 GridPane.setRowIndex(rectangle, x);
 
-                gridPane.getChildren().add(rectangle);
+                nGridPane.getChildren().add(rectangle);
             }
         });
 
@@ -105,8 +105,8 @@ public class BattleshipGUIView extends Application implements Observer {
     }
 
     public GridPane displayGrid() {
-        for (int y = 0; y < battleshipModel.getGameBoard().length; y++) {
-            for (int x = 0; x < battleshipModel.getGameBoard().length; x++) {
+        for (int y = 0; y < nBattleshipModel.getGameBoard().length; y++) {
+            for (int x = 0; x < nBattleshipModel.getGameBoard().length; x++) {
 
                 Rectangle rectangle = new Rectangle(50, 50);
                 rectangle.setFill(Color.LIGHTBLUE);
@@ -115,17 +115,17 @@ public class BattleshipGUIView extends Application implements Observer {
                 GridPane.setRowIndex(rectangle, y);
                 GridPane.setColumnIndex(rectangle, x);
 
-                gridPane.getChildren().add(rectangle);
+                nGridPane.getChildren().add(rectangle);
             }
         }
-        return gridPane;
+        return nGridPane;
     }
 
 
     @Override
     public void start(Stage primaryStage) {
-        battleshipModel = new BattleshipModel();
-        battleshipController = new BattleshipController(battleshipModel);
+        nBattleshipModel = new BattleshipModel();
+        nBattleshipController = new BattleshipController(nBattleshipModel);
 
         primaryStage.setTitle("Battleships MVC");
         GridPane gridPane = displayGrid();
@@ -141,14 +141,14 @@ public class BattleshipGUIView extends Application implements Observer {
         Button customFleetConfigurationButton = new Button("Load Fleet From File");
 
         defaultFleetConfigurationButton.setOnMouseClicked(event -> {
-            battleshipController.setShipConfigurationDecision(true);
-            battleshipModel.loadShipConfiguration();
+            nBattleshipController.setShipConfigurationDecision(true);
+            nBattleshipModel.loadShipConfiguration();
             primaryStage.setScene(primaryScene);
         });
 
         customFleetConfigurationButton.setOnMouseClicked(event -> {
-            battleshipController.setShipConfigurationDecision(false);
-            battleshipModel.loadShipConfiguration();
+            nBattleshipController.setShipConfigurationDecision(false);
+            nBattleshipModel.loadShipConfiguration();
             primaryStage.setScene(primaryScene);
         });
 
@@ -158,7 +158,7 @@ public class BattleshipGUIView extends Application implements Observer {
 
         primaryStage.setScene(secondaryScene);
         primaryStage.show();
-        battleshipModel.addObserver(this);
+        nBattleshipModel.addObserver(this);
         update(null, null);
     }
 
