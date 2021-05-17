@@ -16,7 +16,7 @@ public class BattleshipCLIVIew {
             battleshipModel.displayBoard();
 
             System.out.print("Enter Missile Coordinates: ");
-            String input = scanner.next().toUpperCase();
+            String input = scanner.next();
 
             int col = battleshipModel.convertUserInputToColumn(input.charAt(0));
             int row = Integer.parseInt(String.valueOf(input.split(String.valueOf(input.charAt(0)))[1])) - 1;
@@ -32,6 +32,6 @@ public class BattleshipCLIVIew {
     }
 
     public static void main(String[] args) {
-       run();
+        run();
     }
 }

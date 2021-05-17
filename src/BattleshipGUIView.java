@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BattleshipGUIView extends Application implements Observer {
 

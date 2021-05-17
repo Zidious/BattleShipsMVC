@@ -30,7 +30,7 @@ public class BattleshipController {
     }
 
     public int getMissileSentY() {
-        return nBattleshipModel.getLatestMissileAtY();
+        return nBattleshipModel.getLatestMissileY();
     }
 
     public boolean isMissileHit() {
