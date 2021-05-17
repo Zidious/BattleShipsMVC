@@ -92,7 +92,7 @@ public class BattleshipGUIView extends Application implements Observer {
 
     }
 
-
+    // Get Node via x and Y function: https://stackoverflow.com/questions/20825935/javafx-get-node-by-row-and-column
     private Node getNode(GridPane grid, int column, int row) {
         Node result = null;
         for (Node node : grid.getChildren()) {
