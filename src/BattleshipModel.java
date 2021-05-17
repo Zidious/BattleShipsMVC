@@ -318,6 +318,7 @@ public class BattleshipModel extends Observable {
         return col;
     }
 
+    // Text file to 2d Array: https://www.tutorialspoint.com/How-to-read-a-2d-array-from-a-file-in-java
     public void readFleetConfiguration() {
 
         try (Scanner sc = new Scanner(new BufferedReader(new FileReader("src\\shipConfiguration.txt")))) {
