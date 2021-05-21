@@ -282,6 +282,7 @@ public class BattleshipModel extends Observable {
 
     // Function to convert the char input for CLI to column number A = 0, B = 1 etc
     public int convertUserInputToColumn(char input) {
+        System.out.println("OUTPUT: " + input);
         assert Character.isUpperCase(input) : "Failed Input: Input needs to be uppercase";
         int col = 0;
         switch (input) {
@@ -314,6 +315,8 @@ public class BattleshipModel extends Observable {
                 break;
             case 'J':
                 col = 9;
+            default:
+                System.out.println("NOT RECOGNISED");
         }
         return col;
     }

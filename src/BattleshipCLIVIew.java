@@ -23,6 +23,7 @@ public class BattleshipCLIVIew {
 
             battleshipModel.setIncomingMissileCoordinates(row, col);
             battleshipModel.detectMissilesReceivedOnShips();
+            System.out.println("COORDS: " + battleshipModel.getLatestMissileX() + "," + battleshipModel.getLatestMissileY());
             battleshipModel.displayBoard();
 
 
